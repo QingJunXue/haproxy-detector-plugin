@@ -47,17 +47,58 @@ public class HAProxyDetectorHandler extends ByteToMessageDecoder {
     @Override
     public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         try {
-            ProtocolDetectionResult<HAProxyProtocolVersion> detectionResult = HAProxyMessageDecoder.detectProtocol(in);
+            if (logger != null) {
+                logger.info("HAProxy detector: Processing " + in.readableBytes() + " bytes from " + ctx.channel().remoteAddress());
+            }
+            
+            // 安全检查：确保有足够的数据进行检测
+            if (in.readableBytes() < 16) {
+                if (logger != null) {
+                    logger.info("HAProxy detector: Not enough data for detection (" + in.readableBytes() + " bytes), waiting...");
+                }
+                return; // 等待更多数据
+            }
+            
+            ProtocolDetectionResult<HAProxyProtocolVersion> detectionResult;
+            try {
+                detectionResult = HAProxyMessageDecoder.detectProtocol(in);
+            } catch (IndexOutOfBoundsException e) {
+                if (logger != null) {
+                    logger.info("HAProxy detector: Buffer underflow during detection, waiting for more data. Error: " + e.getMessage());
+                }
+                return; // 等待更多数据
+            }
+            
+            if (logger != null) {
+                logger.info("HAProxy detection result: " + detectionResult.state() + " from " + ctx.channel().remoteAddress());
+            }
+            
             switch (detectionResult.state()) {
                 case NEEDS_MORE_DATA:
+                    if (logger != null) {
+                        logger.info("HAProxy detector: Need more data, waiting...");
+                    }
                     return;
                 case INVALID:
+                    if (logger != null) {
+                        logger.info("HAProxy detector: Invalid protocol, removing detector from " + ctx.channel().remoteAddress());
+                    }
                     ctx.pipeline().remove(this);
                     break;
                 case DETECTED:
                 default:
+                    if (logger != null) {
+                        logger.info("HAProxy protocol detected from " + ctx.channel().remoteAddress() + ", version: " + detectionResult.detectedProtocol());
+                    }
                     SocketAddress addr = ctx.channel().remoteAddress();
+                    if (logger != null) {
+                        logger.info("HAProxy detector: Checking whitelist for address: " + addr);
+                    }
+                    
                     if (!ProxyWhitelist.check(addr)) {
+                        if (logger != null) {
+                            logger.warning("HAProxy detector: Address " + addr + " not in whitelist, closing connection");
+                        }
                         try {
                             ProxyWhitelist.getWarningFor(addr).ifPresent(logger::info);
                         } finally {
@@ -66,26 +107,54 @@ public class HAProxyDetectorHandler extends ByteToMessageDecoder {
                         return;
                     }
 
+                    if (logger != null) {
+                        logger.info("HAProxy detector: Address whitelist check passed, setting up pipeline");
+                    }
+
                     ChannelPipeline pipeline = ctx.pipeline();
                     try {
                         pipeline.replace(this, "haproxy-decoder", new HAProxyMessageDecoder());
+                        if (logger != null) {
+                            logger.info("HAProxy detector: Successfully replaced detector with HAProxy decoder");
+                        }
                     } catch (IllegalArgumentException ignored) {
                         pipeline.remove(this); // decoder already exists
+                        if (logger != null) {
+                            logger.warning("HAProxy detector: Decoder already exists, removing detector");
+                        }
                     }
 
                     if (haproxyHandler != null) {
                         try {
                             pipeline.addAfter("haproxy-decoder", "haproxy-handler", haproxyHandler);
+                            if (logger != null) {
+                                logger.info("HAProxy detector: Successfully added HAProxy handler to pipeline");
+                            }
                         } catch (IllegalArgumentException ignored) {
-                            // handler already exists
+                            if (logger != null) {
+                                logger.warning("HAProxy detector: Handler already exists");
+                            }
                         } catch (NoSuchElementException e) {  // Not sure why but...
+                            if (logger != null) {
+                                logger.warning("HAProxy detector: Decoder not found, trying alternative placement");
+                            }
                             if (pipeline.get("timeout") != null) {
                                 pipeline.addAfter("timeout", "haproxy-decoder", new HAProxyMessageDecoder());
                                 pipeline.addAfter("timeout", "haproxy-handler", haproxyHandler);
+                                if (logger != null) {
+                                    logger.info("HAProxy detector: Added components after timeout handler");
+                                }
                             } else {
                                 pipeline.addFirst("haproxy-handler", haproxyHandler);
                                 pipeline.addFirst("haproxy-decoder", new HAProxyMessageDecoder());
+                                if (logger != null) {
+                                    logger.info("HAProxy detector: Added components at beginning of pipeline");
+                                }
                             }
+                        }
+                    } else {
+                        if (logger != null) {
+                            logger.info("HAProxy detector: No HAProxy handler provided");
                         }
                     }
                     break;
