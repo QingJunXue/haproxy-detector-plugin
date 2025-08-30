@@ -54,8 +54,7 @@ public final class BukkitMain extends JavaPlugin {
             return;
         }
         try {
-            // 仅支持并使用 ProtocolLib 5.x+ 的注入策略
-            injectionStrategy = createInjectionStrategy2();
+            injectionStrategy = createInjectionStrategy();
             injectionStrategy.inject();
         } catch (ReflectiveOperationException e) {
             sneakyThrow(e);
@@ -71,8 +70,8 @@ public final class BukkitMain extends JavaPlugin {
         }
     }
 
-    private static InjectionStrategy createInjectionStrategy2() throws ReflectiveOperationException {
-        return new InjectionStrategy2(logger);
+    private static InjectionStrategy createInjectionStrategy() throws ReflectiveOperationException {
+        return new InjectionStrategy(logger);
     }
 
     @Override
