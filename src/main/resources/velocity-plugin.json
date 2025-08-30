@@ -1,0 +1,9 @@
+{
+  "id": "haproxy-detector-plugin",
+  "name": "HAProxyDetector",
+  "version": "${project.version}",
+  "description": "允许同时接受直连与通过 HAProxy 转发的代理连接。",
+  "authors": ["ACJ_DragonDream", "andylizi"],
+  "url": "https://github.com/QingJunXue/haproxy-detector-plugin",
+  "main": "net.andylizi.haproxydetector.velocity.VelocityMain"
+}

@@ -3,7 +3,7 @@ package net.andylizi.haproxydetector.velocity;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.plugin.Plugin;
+// 使用 resources/velocity-plugin.json 提供元数据，无需 @Plugin 注解
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.config.ProxyConfig;
@@ -28,10 +28,6 @@ import java.util.NoSuchElementException;
 
 import static net.andylizi.haproxydetector.ReflectionUtil.sneakyThrow;
 
-@Plugin(id = "haproxy-detector", name = "HAProxyDetector", version = "3.1.0-SNAPSHOT",
-    url = "https://github.com/andylizi/haproxy-detector",
-    description = "允许同时接受直连与通过 HAProxy 转发的代理连接。",
-    authors = {"andylizi"})
 public final class VelocityMain {
     private final ProxyServer server;
     private final Logger logger;

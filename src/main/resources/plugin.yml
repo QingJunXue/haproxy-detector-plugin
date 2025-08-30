@@ -1,11 +1,11 @@
 name: HAProxyDetector
 main: net.andylizi.haproxydetector.bukkit.BukkitMain
 version: ${project.version}
-author: andylizi
+authors: [ACJ_DragonDream, andylizi]
 load: STARTUP
 depend: [ProtocolLib]
-# This plugin is universal and should support every Minecraft version.
-# If you're getting errors regarding the API version, feel free to change it to whatever you want.
+# 此插件为通用插件，应支持所有版本的《Minecraft》。
+# 如果您遇到关于API版本的错误，请随意将其更改为任何您想要的版本。
 api-version: 1.13
 awareness:
     - !@UTF8
