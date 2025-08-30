@@ -41,7 +41,7 @@ public final class ReflectionUtil {
                 return field;
             }
         }
-        throw new NoSuchFieldException("field with type " + type.getName() + " in " + cls.getName());
+        throw new NoSuchFieldException("未找到类型为 " + type.getName() + " 的字段：" + cls.getName());
     }
 
     public static boolean hasClass(String className) {

@@ -37,7 +37,7 @@ class HAProxyMessageHandler extends SimpleChannelInboundHandler<HAProxyMessage> 
                         freeAddressSetter = MethodHandles.lookup().unreflectSetter(f);
                     } catch (IllegalAccessException e) {
                         sneakyThrow(e);
-                        throw new AssertionError("unreachable");
+                        throw new AssertionError("不应到达的代码路径");
                     }
                 }
             }

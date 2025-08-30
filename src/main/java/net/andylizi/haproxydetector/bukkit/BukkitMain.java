@@ -45,7 +45,7 @@ public final class BukkitMain extends JavaPlugin {
             }
             ProxyWhitelist.whitelist = whitelist;
         } catch (IOException e) {
-            throw new RuntimeException("failed to load proxy whitelist", e);
+            throw new RuntimeException("加载代理白名单失败", e);
         }
 
         if (!ProtocolLibrary.getPlugin().isEnabled()) {

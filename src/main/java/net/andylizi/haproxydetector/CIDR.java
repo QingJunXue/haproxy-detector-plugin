@@ -19,11 +19,11 @@ public final class CIDR {
         if (idx != -1) {
             String addrPart = cidr.substring(0, idx);
             if (addrPart.isEmpty()) {
-                throw new IllegalArgumentException("invalid CIDR string \"" + cidr + "\"");
+                throw new IllegalArgumentException("无效的 CIDR 字符串：\"" + cidr + "\"");
             }
 
             if (!InetAddressValidator.getInstance().isValid(addrPart)) {
-                throw new IllegalArgumentException("CIDR must be consist of an valid IP address: " + addrPart);
+                throw new IllegalArgumentException("CIDR 必须由有效的 IP 地址组成：" + addrPart);
             }
 
             try {
@@ -31,10 +31,10 @@ public final class CIDR {
                 int prefix = Integer.parseInt(cidr.substring(idx + 1));
                 return Collections.singletonList(new CIDR(addr, prefix));
             } catch (UnknownHostException | IllegalArgumentException | IndexOutOfBoundsException e) {
-                throw new IllegalArgumentException("invalid CIDR string \"" + cidr + "\"", e);
+                throw new IllegalArgumentException("无效的 CIDR 字符串：\"" + cidr + "\"", e);
             }
         } else {
-            if (cidr.isEmpty()) throw new IllegalArgumentException("empty CIDR string");
+            if (cidr.isEmpty()) throw new IllegalArgumentException("空的 CIDR 字符串");
             InetAddress[] addresses = InetAddress.getAllByName(cidr);
             if (addresses.length == 1) {
                 return Collections.singletonList(new CIDR(addresses[0]));
@@ -54,8 +54,8 @@ public final class CIDR {
         this.prefix = prefix;
 
         int bytesLen = addr.getAddress().length;
-        if (prefix < 0) throw new IllegalArgumentException("prefix must not be negative");
-        if (prefix > bytesLen * Byte.SIZE) throw new IllegalArgumentException("invalid prefix length");
+        if (prefix < 0) throw new IllegalArgumentException("前缀不能为负数");
+        if (prefix > bytesLen * Byte.SIZE) throw new IllegalArgumentException("无效的前缀长度");
 
         byte[] buf = new byte[bytesLen];
         Arrays.fill(buf, (byte) 0xFF);
