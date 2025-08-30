@@ -1,6 +1,6 @@
 # HAProxyDetector
 
-[![](https://img.shields.io/github/downloads/andylizi/haproxy-detector/total?style=for-the-badge)](https://github.com/andylizi/haproxy-detector/releases) [![](https://img.shields.io/github/license/andylizi/haproxy-detector?style=for-the-badge)](https://github.com/andylizi/haproxy-detector/blob/master/LICENSE) [![](https://img.shields.io/bstats/servers/12604?label=Spigot%20Servers&style=for-the-badge)](https://bstats.org/plugin/bukkit/HAProxyDetector/12604) [![](https://img.shields.io/bstats/servers/12605?label=BC%20Servers&style=for-the-badge)](https://bstats.org/plugin/bungeecord/HAProxyDetector/12605) [![](https://img.shields.io/bstats/servers/14442?label=Velocity%20Servers&style=for-the-badge)](https://bstats.org/plugin/velocity/HAProxyDetector/14442)
+[![](https://img.shields.io/github/downloads/QingJunXue/haproxy-detector-plugin/total?style=for-the-badge)](https://github.com/QingJunXue/haproxy-detector-plugin/releases) [![](https://img.shields.io/github/license/QingJunXue/haproxy-detector-plugin?style=for-the-badge)](https://github.com/QingJunXue/haproxy-detector-plugin/blob/main/LICENSE) [![](https://img.shields.io/bstats/servers/12604?label=Spigot%20Servers&style=for-the-badge)](https://bstats.org/plugin/bukkit/HAProxyDetector/12604) [![](https://img.shields.io/bstats/servers/12605?label=BC%20Servers&style=for-the-badge)](https://bstats.org/plugin/bungeecord/HAProxyDetector/12605) [![](https://img.shields.io/bstats/servers/14442?label=Velocity%20Servers&style=for-the-badge)](https://bstats.org/plugin/velocity/HAProxyDetector/14442)
 
 这是一个适用于 [BungeeCord](https://github.com/SpigotMC/BungeeCord/)、[Spigot](https://www.spigotmc.org/wiki/spigot/) 与 [Velocity](https://velocitypowered.com/) 的插件，允许在同一端口同时接受直连与通过 HAProxy 转发的代理连接。关于 [HAProxy](https://www.haproxy.org/) 的用途与说明，可参阅 [此处的文档](https://github.com/MinelinkNetwork/BungeeProxy/blob/master/README.md)。
 
@@ -83,5 +83,12 @@ YesIReallyWantToDisableWhitelistItsExtremelyDangerousButIKnowWhatIAmDoing!!!
 
 - 原作者：Andy Li（GitHub：[@andylizi](https://github.com/andylizi)）
 - 源仓库：[`andylizi/haproxy-detector`](https://github.com/andylizi/haproxy-detector)
-- 许可证：GNU Lesser General Public License v3 或更高版本。详见本仓库中的 `LICENSE` 文件。
+- 许可证：GNU Lesser General Public License v3。详见本仓库中的 `LICENSE` 文件。
 
+## 协作与接管
+
+- 本项目由 ACJ_DragonDream 与 ChatGPT5 共同完成。
+- 欢迎熟悉 Java 的爱好者提交 Issue/PR，或与我们联系以接管项目的后续维护。
+- 仓库地址：`https://github.com/QingJunXue/haproxy-detector-plugin`
+
+## 关于ISS
