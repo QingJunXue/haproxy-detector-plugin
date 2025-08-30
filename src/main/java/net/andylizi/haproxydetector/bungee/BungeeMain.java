@@ -75,22 +75,22 @@ public final class BungeeMain extends Plugin implements Listener {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "deprecation"})
     public void onEnable() {
         try {
             Path path = this.getDataFolder().toPath().resolve("whitelist.conf");
             ProxyWhitelist whitelist = ProxyWhitelist.loadOrDefault(path).orElse(null);
             if (whitelist == null) {
                 logger.warning("!!! ==============================");
-                logger.warning("!!! Proxy whitelist is disabled in the config.");
-                logger.warning("!!! This is EXTREMELY DANGEROUS, don't do this in production!");
+                logger.warning("!!! 代理白名单已在配置中禁用。");
+                logger.warning("!!! 这非常危险，请勿在生产环境中这样做！");
                 logger.warning("!!! ==============================");
             } else if (whitelist.size() == 0) {
-                logger.warning("Proxy whitelist is empty. This will disallow all proxies!");
+                logger.warning("代理白名单为空。这将拒绝所有代理连接！");
             }
             ProxyWhitelist.whitelist = whitelist;
         } catch (IOException e) {
-            throw new RuntimeException("failed to load proxy whitelist", e);
+            throw new RuntimeException("加载代理白名单失败", e);
         }
 
         try {
@@ -121,7 +121,7 @@ public final class BungeeMain extends Plugin implements Listener {
         if (proxyProtocolChecker != null) {
             if (Stream.concat(getProxy().getConfigurationAdapter().getListeners().stream(),
                     getProxy().getConfig().getListeners().stream()).noneMatch(proxyProtocolChecker)) {
-                logger.warning("Proxy protocol is disabled, the plugin may not work correctly!");
+                logger.warning("代理协议已禁用，插件可能无法正常工作！");
             }
         }
 
@@ -129,7 +129,7 @@ public final class BungeeMain extends Plugin implements Listener {
             Metrics metrics = new Metrics(this, 12605);
             metrics.addCustomChart(MetricsId.createWhitelistCountChart());
         } catch (Throwable t) {
-            logger.log(Level.WARNING, "Failed to start metrics", t);
+            logger.log(Level.WARNING, "启动统计上报失败", t);
         }
     }
 
@@ -189,7 +189,7 @@ public final class BungeeMain extends Plugin implements Listener {
                     || (oldHandler = pipeline.get(HAProxyMessageDecoder.class)) != null) {
                 pipeline.replace(oldHandler, "haproxy-detector", detectorHandler);
             } else {
-                throw new NoSuchElementException("HAProxy support is not enabled");
+                throw new NoSuchElementException("未启用 HAProxy 支持");
             }
         }
     }

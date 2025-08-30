@@ -17,7 +17,6 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bstats.bukkit.Metrics;
 
-import net.andylizi.haproxydetector.ReflectionUtil;
 
 import static net.andylizi.haproxydetector.ReflectionUtil.sneakyThrow;
 
@@ -38,11 +37,11 @@ public final class BukkitMain extends JavaPlugin {
             ProxyWhitelist whitelist = ProxyWhitelist.loadOrDefault(path).orElse(null);
             if (whitelist == null) {
                 logger.warning("!!! ==============================");
-                logger.warning("!!! Proxy whitelist is disabled in the config.");
-                logger.warning("!!! This is EXTREMELY DANGEROUS, don't do this in production!");
+                logger.warning("!!! 代理白名单已在配置中禁用。");
+                logger.warning("!!! 这非常危险，请勿在生产环境中这样做！");
                 logger.warning("!!! ==============================");
             } else if (whitelist.size() == 0) {
-                logger.warning("Proxy whitelist is empty. This will disallow all proxies!");
+                logger.warning("代理白名单为空。这将拒绝所有代理连接！");
             }
             ProxyWhitelist.whitelist = whitelist;
         } catch (IOException e) {
@@ -50,25 +49,14 @@ public final class BukkitMain extends JavaPlugin {
         }
 
         if (!ProtocolLibrary.getPlugin().isEnabled()) {
-            logger.severe("Required dependency ProtocolLib is not enabled, exiting");
+            logger.severe("缺少必要依赖 ProtocolLib，插件即将禁用");
             this.setEnabled(false);
             return;
         }
-        String plVersion = ProtocolLibrary.getPlugin().getDescription().getVersion();
-
         try {
-            if (ReflectionUtil.hasClass("com.comphenix.protocol.injector.netty.ProtocolInjector")) {
-                injectionStrategy = createInjectionStrategy1();
-            } else if (ReflectionUtil.hasClass(
-                    "com.comphenix.protocol.injector.netty.manager.NetworkManagerInjector")) {
-                injectionStrategy = createInjectionStrategy2();
-            } else {
-                throw new UnsupportedOperationException("unsupported ProtocolLib version " + plVersion);
-            }
-
+            // 仅支持并使用 ProtocolLib 5.x+ 的注入策略
+            injectionStrategy = createInjectionStrategy2();
             injectionStrategy.inject();
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            throw new UnsupportedOperationException("unsupported ProtocolLib version " + plVersion, e);
         } catch (ReflectiveOperationException e) {
             sneakyThrow(e);
         }
@@ -79,14 +67,8 @@ public final class BukkitMain extends JavaPlugin {
             metrics.addCustomChart(new SimplePie(MetricsId.KEY_PROTOCOLLIB_VERSION,
                     () -> ProtocolLibrary.getPlugin().getDescription().getVersion()));
         } catch (Throwable t) {
-            logger.log(Level.WARNING, "Failed to start metrics", t);
+            logger.log(Level.WARNING, "启动统计上报失败", t);
         }
-    }
-
-    // Use separated methods to make sure the strategy classes won't be loaded
-    // until they're actually used.
-    private static InjectionStrategy createInjectionStrategy1() throws ReflectiveOperationException {
-        return new InjectionStrategy1(logger);
     }
 
     private static InjectionStrategy createInjectionStrategy2() throws ReflectiveOperationException {

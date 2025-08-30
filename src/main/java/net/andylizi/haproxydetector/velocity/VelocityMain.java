@@ -50,19 +50,19 @@ public final class VelocityMain {
     public void onProxyInitialization(ProxyInitializeEvent event) throws ReflectiveOperationException, IOException {
         if (!isProxyEnabled()) {
             logger.error("!!! ==============================");
-            logger.error("!!! Proxy protocol is not enabled,");
-            logger.error("!!! the plugin will not work correctly!");
+            logger.error("!!! 未启用代理协议 (haproxy-protocol)，");
+            logger.error("!!! 插件将无法正常工作！");
             logger.error("!!! ==============================");
         }
 
         ProxyWhitelist whitelist = ProxyWhitelist.loadOrDefault(this.dataDirectory.resolve("whitelist.conf")).orElse(null);
         if (whitelist == null) {
             logger.warn("!!! ==============================");
-            logger.warn("!!! Proxy whitelist is disabled in the config.");
-            logger.warn("!!! This is EXTREMELY DANGEROUS, don't do this in production!");
+            logger.warn("!!! 代理白名单已在配置中禁用。");
+            logger.warn("!!! 这非常危险，请勿在生产环境中这样做！");
             logger.warn("!!! ==============================");
         } else if (whitelist.size() == 0) {
-            logger.warn("Proxy whitelist is empty. This will disallow all proxies!");
+            logger.warn("代理白名单为空。这将拒绝所有代理连接！");
         }
         ProxyWhitelist.whitelist = whitelist;
 
@@ -72,7 +72,7 @@ public final class VelocityMain {
             Metrics metrics = metricsFactory.make(this, 14442);
             metrics.addCustomChart(MetricsId.createWhitelistCountChart());
         } catch (Throwable t) {
-            logger.warn("Failed to start metrics", t);
+            logger.warn("启动统计上报失败", t);
         }
     }
 
@@ -98,7 +98,7 @@ public final class VelocityMain {
             new DetectorInitializer<>(logger, originalInitializer);
         MethodHandle set = MethodHandles.lookup().unreflect(holderType.getMethod("set", ChannelInitializer.class));
         try {
-            logger.info("Replacing channel initializer; you can safely ignore the following warning.");
+            logger.info("正在替换通道初始化器；可以安全忽略下一条警告。");
             // We use MethodHandle here because it has a cleaner stacktrace
             // for ChannelInitializerHolder.set() to display
             set.invoke(holder, newInitializer);
@@ -147,7 +147,7 @@ public final class VelocityMain {
                 HAProxyMessageDecoder decoder = pipeline.get(HAProxyMessageDecoder.class);
                 pipeline.replace(decoder, "haproxy-detector", new HAProxyDetectorHandler(logger));
             } catch (NoSuchElementException | NullPointerException e) {
-                throw new RuntimeException("HAProxy support is not enabled", e);
+                throw new RuntimeException("未启用 HAProxy 支持", e);
             }
         }
     }

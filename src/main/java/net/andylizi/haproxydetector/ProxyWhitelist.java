@@ -31,7 +31,7 @@ public class ProxyWhitelist {
         InetAddress address = ((InetSocketAddress) socketAddress).getAddress();
         if (!address.equals(lastWarning)) {
             lastWarning = address;
-            return Optional.of("Proxied remote address " + address + " is not in the whitelist");
+            return Optional.of("代理连接来源地址 " + address + " 不在白名单中");
         }
         return Optional.empty();
     }
@@ -40,13 +40,13 @@ public class ProxyWhitelist {
         Files.createDirectories(path.getParent());
         if (!Files.exists(path) || Files.isDirectory(path)) {
             Files.write(path, Arrays.asList(
-                "# List of allowed proxy IPs",
+                "# 允许的代理 IP 列表",
                 "#",
-                "# An empty whitelist will disallow all proxies.",
-                "# Each entry must be an valid IP address, domain name or CIDR.",
-                "# Domain names will be resolved only once at startup.",
-                "# Each domain can have multiple A/AAAA records, all of them will be allowed.",
-                "# CIDR prefixes are not allowed in domain names.",
+                "# 空白名单将拒绝所有代理。",
+                "# 每一行必须是有效的 IP 地址、域名或 CIDR。",
+                "# 域名仅在启动时解析一次。",
+                "# 单个域名可解析出多个 A/AAAA 记录，均会被允许。",
+                "# 域名不支持附带 CIDR 前缀。",
                 "",
                 "127.0.0.0/8",
                 "::1/128"

@@ -111,9 +111,9 @@ public class InjectionStrategy2 implements InjectionStrategy {
                 } catch (NoSuchElementException e) {
                     pipeline.addFirst("haproxy-detector", detector);
                 }
-            } catch (Throwable t) { // stop netty from eating my exceptions
+            } catch (Throwable t) { // 防止 Netty 吞掉异常
                 if (logger != null)
-                    logger.log(Level.WARNING, "Exception while injection proxy detector", t);
+                    logger.log(Level.WARNING, "注入代理检测器时发生异常", t);
                 else
                     t.printStackTrace();
             }
